@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/content_main_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.xscz.alarmclock.MainActivity"
+    tools:showIn="@layout/activity_main">
+
+    <FrameLayout
+        android:id="@+id/bannerContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+    </FrameLayout>
+
+
+    <TextView
+        android:id="@+id/stop"
+        android:layout_width="60sp"
+        android:layout_height="60sp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="135dp"
+        android:background="@drawable/circle_stop"
+        android:gravity="center"
+        android:text="长按停止"
+        android:textColor="@color/sogou_game_sdk_color_666666"
+        android:textSize="11sp" />
+
+
+    <TextView
+        android:id="@+id/times"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/stop"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="130dp"
+        android:textSize="55sp" />
+</RelativeLayout>
