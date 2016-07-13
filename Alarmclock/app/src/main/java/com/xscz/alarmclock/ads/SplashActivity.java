@@ -7,6 +7,8 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.ViewGroup;
 
+import com.baidu.mobads.SplashAd;
+import com.baidu.mobads.SplashAdListener;
 import com.qq.e.ads.splash.SplashAD;
 import com.qq.e.ads.splash.SplashADListener;
 import com.xscz.alarmclock.MainActivity;
@@ -19,13 +21,17 @@ public class SplashActivity extends Activity implements SplashADListener {
     private ViewGroup container;
 
     public boolean canJump = false;
-
+    private SplashAdListener listener;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+
+
         container = (ViewGroup) this.findViewById(R.id.splash_container);
+
         splashAD = new SplashAD(this, container, Constants.APPID, Constants.SplashPosID, this);
+
 
         /**
          * 开屏广告现已增加新的接口，可以由开发者在代码中设置开屏的超时时长
@@ -34,8 +40,48 @@ public class SplashActivity extends Activity implements SplashADListener {
          *
          * splashAD = new SplashAD(this, container, Constants.APPID, Constants.SplashPosID, this, 3000);可以设置超时时长为3000ms
          */
+//        -------------------baidu---start--------------------------------------
+        listener = new SplashAdListener() {
+            @Override
+            public void onAdDismissed() {
+                Log.i("AD_DEMO", "onAdDismissed");
+                jumpWhenCanClick(); // 跳转至您的应用主界面
+            }
+
+            @Override
+            public void onAdFailed(String arg0) {
+                Log.i("AD_DEMO", "onAdFailed");
+                jump();
+            }
+
+            @Override
+            public void onAdPresent() {
+                Log.i("AD_DEMO", "onAdPresent");
+            }
+
+            @Override
+            public void onAdClick() {
+                Log.i("AD_DEMO", "onAdClick");
+                // 设置开屏可接受点击时，该回调可用
+            }
+        };
     }
 
+    /**
+     * 当设置开屏可点击时，需要等待跳转页面关闭后，再切换至您的主窗口。故此时需要增加canJumpImmediately判断。 另外，点击开屏还需要在onResume中调用jumpWhenCanClick接口。
+     */
+    public boolean canJumpImmediately = false;
+
+    private void jumpWhenCanClick() {
+        Log.d("AD_DEMO", "this.hasWindowFocus():" + this.hasWindowFocus());
+        if (canJumpImmediately) {
+            this.startActivity(new Intent(SplashActivity.this, MainActivity.class));
+            this.finish();
+        } else {
+            canJumpImmediately = true;
+        }
+
+    }
     @Override
     public void onADPresent() {
         Log.i("AD_DEMO", "SplashADPresent");
@@ -56,8 +102,12 @@ public class SplashActivity extends Activity implements SplashADListener {
     public void onNoAD(int errorCode) {
         Log.i("AD_DEMO", "LoadSplashADFail, eCode=" + errorCode);
         /** 如果加载广告失败，则直接跳转 */
-        this.startActivity(new Intent(this, MainActivity.class));
-        this.finish();
+        if(null!=listener){
+            new SplashAd(this, container, listener, Constants.bd_SplashPosID, true);
+        }else{
+            this.startActivity(new Intent(this, MainActivity.class));
+            this.finish();
+        }
     }
 
     /**
@@ -72,11 +122,19 @@ public class SplashActivity extends Activity implements SplashADListener {
             canJump = true;
         }
     }
+    /**
+     * 不可点击的开屏，使用该jump方法，而不是用jumpWhenCanClick
+     */
+    private void jump() {
+        this.startActivity(new Intent(SplashActivity.this, MainActivity.class));
+        this.finish();
+    }
 
     @Override
     protected void onPause() {
         super.onPause();
         canJump = false;
+        canJumpImmediately = false;
     }
 
     @Override
@@ -86,6 +144,11 @@ public class SplashActivity extends Activity implements SplashADListener {
             next();
         }
         canJump = true;
+
+        if (canJumpImmediately) {
+            jumpWhenCanClick();
+        }
+        canJumpImmediately = true;
     }
 
     /** 开屏页最好禁止用户对返回按钮的控制 */

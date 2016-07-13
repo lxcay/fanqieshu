@@ -50,7 +50,7 @@
 
 
 
-        <!-- 声明SDK所需要的组件 -->
+        <!-- tencent 声明SDK所需要的组件 -->
         <service
             android:name="com.qq.e.comm.DownloadService"
             android:exported="false" />
@@ -63,6 +63,14 @@
         <meta-data android:name="TA_APPKEY" android:value="A6BG1I6S5PCT"/>
         <!-- 请将value改为app发布对应的渠道，不同的发布渠道使用不同的名字 < -->
         <meta-data android:name="InstallChannel" android:value="play"/>
+
+
+        <!--baidu -->
+        <activity
+            android:name="com.baidu.mobads.AppActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+
 
     </application>
 

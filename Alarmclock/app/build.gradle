@@ -5,18 +5,56 @@ android {
     buildToolsVersion "23.0.3"
 
     defaultConfig {
+        //这里是修改包名的
         applicationId "com.xscz.alarmclock"
         minSdkVersion 14
         targetSdkVersion 23
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "2"
     }
+
+    //    //签名
+//    signingConfigs {
+//        debug {
+////            storeFile file("C:/Users/lizhen/.android/debug.keystore")
+//        }
+//        release {
+//            storeFile file("./key/android.keystore")      //签名文件
+//            storePassword KEYSTORE_PASSWORD     //看gradle.properties
+//            keyAlias "onedollar"
+//            keyPassword KEY_PASSWORD  //签名密码
+//        }
+//    }
+
+
     buildTypes {
-        release {
+        debug{
+            // 显示Log
+            buildConfigField "boolean", "LOG_DEBUG", "true"
+
+            versionNameSuffix "-debug"
             minifyEnabled false
+            zipAlignEnabled false
+            shrinkResources false
+//            //签名
+//            signingConfig signingConfigs.debug
+        }
+        release {
+            // 不显示Log
+            buildConfigField "boolean", "LOG_DEBUG", "false"
+            //混淆
+            minifyEnabled false
+            // 移除无用的resource文件
+            shrinkResources true
+
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+//            //签名
+//            signingConfig signingConfigs.relealse
         }
     }
+
+    flavors()
+
 
     task nativeLibsToJar(type: Zip, description: "create a jar archive of the native libs") {
         destinationDir file("$projectDir/libs")
@@ -30,6 +68,22 @@ android {
         compileTask -> compileTask.dependsOn(nativeLibsToJar)
     }
 }
+
+
+def flavors() {
+    def path = '../channel.txt' //channel.txt的路径
+    file(path).eachLine {
+        line ->
+            if(!line.startsWith("//")) {
+                //动态创建productFlavor
+                android.productFlavors.create(line, {
+                    manifestPlaceholders = [channel_param: name]
+                })
+            }
+    }
+//    直接执行 ./gradlew assembleRelease ， 然后就可以静静的喝杯咖啡等待打包完成吧。
+}
+
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
