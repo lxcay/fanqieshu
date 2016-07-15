@@ -21,15 +21,24 @@
 
     <include layout="@layout/content_main" />
 
-    <ImageButton
-        android:id="@+id/fab"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:background="@drawable/start_btn"
-        android:layout_gravity="center_vertical"
-        android:layout_margin="@dimen/fab_margin"
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical">
 
-        android:src="@mipmap/ic_media_embed_play"/>
+        <ImageButton
+            android:id="@+id/fab"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:background="@drawable/start_btn" />
+
+        <ImageView
+            android:id="@+id/mImageView"
+            android:layout_width="105dp"
+            android:layout_height="110dp"
+            android:layout_gravity="center"
+            android:background="@mipmap/ic_media_embed_play" />
+    </FrameLayout>
 
 
 </android.support.design.widget.CoordinatorLayout>

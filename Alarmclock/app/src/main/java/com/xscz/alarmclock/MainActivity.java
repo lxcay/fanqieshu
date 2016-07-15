@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private static TextView times;
     private TextView stop;
     private ImageButton fab;
+    private ImageView mImageView;
     private static RelativeLayout layoutBg;
     private static Toolbar toolbar;
     private static int white, blue;
@@ -133,6 +135,7 @@ public class MainActivity extends AppCompatActivity {
         bannerContainer = (ViewGroup) findViewById(R.id.bannerContainer);
 
         fab = (ImageButton) findViewById(R.id.fab);
+        mImageView= (ImageView) findViewById(R.id.mImageView);
         times = (TextView) findViewById(R.id.times);
         stop = (TextView) findViewById(R.id.stop);
         layoutBg = (RelativeLayout) findViewById(R.id.content_main_layout);
@@ -235,6 +238,8 @@ public class MainActivity extends AppCompatActivity {
         stop.setVisibility(View.GONE);
         times.setVisibility(View.GONE);
         fab.setVisibility(View.VISIBLE);
+        mImageView.setVisibility(View.VISIBLE);
+
         layoutBg.setBackgroundColor(white);
         toolbar.setTitle("");
 
@@ -248,6 +253,7 @@ public class MainActivity extends AppCompatActivity {
     private void clickFabState() {
         toolbar.setTitle("工作");
         fab.setVisibility(View.GONE);
+        mImageView.setVisibility(View.GONE);
         stop.setVisibility(View.VISIBLE);
         times.setVisibility(View.VISIBLE);
 

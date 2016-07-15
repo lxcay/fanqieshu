@@ -10,7 +10,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 23
         versionCode 2
-        versionName "2"
+        versionName "fanqieshu"
     }
 
     //    //签名
@@ -32,10 +32,9 @@ android {
             // 显示Log
             buildConfigField "boolean", "LOG_DEBUG", "true"
 
-            versionNameSuffix "-debug"
             minifyEnabled false
-            zipAlignEnabled false
             shrinkResources false
+//            proguardFiles getDefaultProguardFile('proguard-project.txt'), 'proguard-project-debug.txt'
 //            //签名
 //            signingConfig signingConfigs.debug
         }
@@ -53,22 +52,53 @@ android {
         }
     }
 
+    //批量打包
     flavors()
 
 
-    task nativeLibsToJar(type: Zip, description: "create a jar archive of the native libs") {
-        destinationDir file("$projectDir/libs")
-        baseName "Native_Libs2"
-        extension "jar"
-        from fileTree(dir: "libs", include: "**/*.so")
-        into "lib"
-    }
+//    //so文件引入,变成一个jar
+//    task nativeLibsToJar(type: Zip, description: "create a jar archive of the native libs") {
+//        destinationDir file("$projectDir/libs")
+//        baseName "Native_Libs2"
+//        extension "jar"
+//        from fileTree(dir: "libs", include: "**/*.so")
+//        into "lib"
+//    }
+//
+//    tasks.withType(JavaCompile) {
+//        compileTask -> compileTask.dependsOn(nativeLibsToJar)
+//    }
 
-    tasks.withType(JavaCompile) {
-        compileTask -> compileTask.dependsOn(nativeLibsToJar)
+//      //afterEvaluate，你可以理解为在配置阶段要结束，项目评估完会走到这一步。
+//    afterEvaluate {
+//        android.applicationVariants.each { variant ->
+//            String buildTypeName = variant.buildType.name
+//            File apkFile = null
+//
+//            variant.outputs.each { output ->
+//                def file = output.outputFile
+//                String prefix = android.defaultConfig.versionName
+//
+//                StringBuilder sb = new StringBuilder().append(prefix).append("_").append(buildTypeName)
+//                sb.append("_").append("v").append(android.defaultConfig.versionCode)
+//                sb.append(".apk")
+//                String fileName = sb.toString()
+//
+//                println "versionCode=" + android.defaultConfig.versionCode + ",,,fileName=" + fileName
+//                apkFile = new File(file.parent, fileName)
+//                output.outputFile = apkFile
+//            }
+//        }
+//    }
+    // 忽略lint错误提示
+    lintOptions {
+        abortOnError false
     }
 }
-
+////    如果想打印这个task ，在 terminal 输入 gradle hello
+//    task hello << {
+//        println 'hello world!'
+//    }
 
 def flavors() {
     def path = '../channel.txt' //channel.txt的路径
@@ -77,6 +107,16 @@ def flavors() {
             if(!line.startsWith("//")) {
                 //动态创建productFlavor
                 android.productFlavors.create(line, {
+//                    //这3个字段是可配的
+//                    versionCode = 10200000
+//                    versionName = "1.2.0."
+//                    applicationId 'com.cmplay.tiles2'
+//                    //这里是举个栗子，如果渠道是百度渠道
+//                    if (line == "channel-baidu") {
+//                        applicationId 'com.xscz.alarmclock.baidu'
+//                    }else{
+//
+//                    }
                     manifestPlaceholders = [channel_param: name]
                 })
             }
@@ -89,4 +129,6 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:23.4.0'
     compile 'com.android.support:design:23.4.0'
+    //只在编译时使用，不打到apk包中
+//    provided files('runtime/CMBilling.jar')
 }
